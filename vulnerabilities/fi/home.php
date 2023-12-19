@@ -20,29 +20,35 @@
 
 </div>
 
-<div class="well">
+<?php
+$INCLUDE_ALLOW_LIST = [
+    "home.php",
+    "dashboard.php",
+    "profile.php",
+    "settings.php"
+];
 
-    <p>
-        <form method="get" action="">
-            <div class="form-group">
-                <br>
-                <div class="text-left">
-                <?php 
-                    $f='readme.txt';
-                    echo "<a class=\"btn btn-primary\" href=\".?file=$f\" /> Click here </a><br><br>";
+if (isset($_GET['file'])) {
+    $requestedFile = $_GET['file'];
+    if (in_array($requestedFile, $INCLUDE_ALLOW_LIST)) {
+        $fileMapping = [
+            "home.php" => "path/to/home.php",
+            "dashboard.php" => "path/to/dashboard.php",
+            "profile.php" => "path/to/profile.php",
+            "settings.php" => "path/to/settings.php"
+        ];
 
-                    if (isset($_GET['file'])) {
-                        $file=$_GET['file'];
-                        include($file);
-                    }                 
-                ?>
-                </div>
-            </div>
-        </form>
-    </p>
+        if (isset($fileMapping[$requestedFile])) {
+            $filePath = $fileMapping[$requestedFile];
 
-      
-    <hr>
-    
-</div>
+            include($filePath);
+        } else {
+            echo "Invalid file request.";
+        }
+    } else {
+        echo "Invalid file request.";
+    }
+}
+?>
+
 <?php include_once('../../about.html'); ?>

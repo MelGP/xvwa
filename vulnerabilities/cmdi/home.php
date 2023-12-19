@@ -29,25 +29,38 @@
             </form>
         </p>
     </div>
-            <?php
+        <?php
             if (isset($_REQUEST['target'])) {
                 $target = $_REQUEST['target'];
-                if($target){
-                    if (stristr(php_uname('s'), 'Windows NT')) { 
-            
-                    $cmd = shell_exec( 'ping  ' . $target );
-                    echo '<pre>'.$cmd.'</pre>';
 
-                    } else { 
-                        $cmd = shell_exec( 'ping  -c 3 ' . $target );
-                        echo '<pre>'.$cmd.'</pre>';
+                if (isValidInput($target)) {
+                    $escapedTarget = escapeshellarg($target);
+
+                    $allowedCommands = [
+                        ['ping', $escapedTarget],
+                        ['ping', '-c', '3', $escapedTarget]
+                    ];
+
+                    if (stristr(php_uname('s'), 'Windows NT')) {
+                        $cmd = $allowedCommands[0];
+                    } else {
+                        $cmd = $allowedCommands[1];
                     }
+
+                    $process = proc_open($cmd, [], $pipes);
+                    $ret = proc_close($process);
+
+                    echo ($ret == 0 ? "OK" : "KO");
+                } else {
+                    echo "Invalid input.";
                 }
             }
-                
-            ?>
-        
-      
+
+            function isValidInput($input)
+            {
+                return preg_match('/^[a-zA-Z0-9.-]+$/', $input);
+            }
+        ?>
     <hr>
     
 </div>

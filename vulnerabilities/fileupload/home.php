@@ -48,7 +48,9 @@
             
             error_reporting(E_ALL);
 
-            $itemcode = "XVWA".rand(1000,9999);
+            do {
+              $itemcode = "XVWA" . mt_rand(1000, 9999);
+            } while (!isUnique($itemcode));
             $itemname = isset($_POST['item']) ? $_POST['item'] : '';
             $itemdesc = isset($_POST['desc']) ? $_POST['desc'] : '';
             $categ = isset($_POST['categ']) ? $_POST['categ'] : '';

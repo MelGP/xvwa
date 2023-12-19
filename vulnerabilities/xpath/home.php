@@ -1,15 +1,32 @@
 <?php
 $result = '';
-if(isset($_POST['submit'])){
-$doc = new DOMDocument;
-$doc->load('coffee.xml');
-$xpath = new DOMXPath($doc);
-$input = $_POST['search'];
-$query = "/Coffees/Coffee[@ID='".$input."']";
-#$result = isset($xpath->query($query)) ? $xpath->query($query) : '';
-$result = $xpath->query($query);
+
+if (isset($_POST['submit'])) {
+    $doc = new DOMDocument;
+    $doc->load('coffee.xml');
+
+    $input = $_POST['search'];
+
+    if (isValidInput($input)) {
+        $query = "/Coffees/Coffee[@ID=:id]";
+
+        $xpath = new DOMXPath($doc);
+        $xpath->registerNamespace('php', 'http://php.net/xpath');
+        $xpath->registerPhpFunctions('intval');
+
+        $xpath->query($query, null, false, array('id' => intval($input)));
+
+    } else {
+        echo "Invalid input.";
+    }
+}
+
+function isValidInput($input)
+{
+    return is_numeric($input);
 }
 ?>
+
 <div class="thumbnail">
     <!--
         <img class="img-responsive" src="http://placehold.it/800x300" alt="">

@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	$uname = $_POST['username'];
-	$password = md5($_POST['password']);
+	$password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 	$ActiveUser = '';
 	include_once('config.php');
 	$sql = "select username from users where username=:username and password=:password";
